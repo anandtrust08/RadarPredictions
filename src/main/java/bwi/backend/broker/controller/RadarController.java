@@ -1,9 +1,11 @@
 package bwi.backend.broker.controller;
 
 import bwi.backend.broker.api.dto.EinzelnachrichtRequestDto;
+import bwi.backend.broker.api.dto.NachrichtResponse;
 import bwi.backend.broker.api.dto.Radar;
 import bwi.backend.broker.repository.RadarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +22,7 @@ public class RadarController {
 
     @GetMapping("/predictions")
     public List<Radar> getRadarPredictions() {
-        return mapToRadar((List<EinzelnachrichtRequestDto> )radarRepository.findAll());
+        return mapToNachrichtResponse((List<EinzelnachrichtRequestDto> )radarRepository.findAll());
     }
 
     @PostMapping("/predictions")
@@ -40,12 +42,13 @@ public class RadarController {
         return nachrichtenList;
     }
 
-    public List<Radar> mapToRadar(List<EinzelnachrichtRequestDto> nachrichten) {
+    public List<Radar> mapToNachrichtResponse(List<EinzelnachrichtRequestDto> nachrichten) {
         List<Radar> predictions = new ArrayList<>();
         nachrichten.forEach(p -> {
             Radar prediction = new Radar(List.of(p.getXCoordinate(), p.getYCoordinate(), p.getZCoordinate()), p.getLabel());
             predictions.add(prediction);
         });
+        //return new NachrichtResponse(predictions);
         return predictions;
     }
 }
